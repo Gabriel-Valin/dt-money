@@ -3,7 +3,8 @@ import { Container, TypeTransaction, CustomRadioBox } from './styles'
 import closeImg from '../../assets/close.svg'
 import incomeImg from '../../assets/income.svg'
 import outcomeImg from '../../assets/outcome.svg'
-import { useState } from 'react'
+import { FormEvent, useState } from 'react'
+import { api } from '../../services/api'
 
 type TransactionModal = {
     isOpen: boolean
@@ -12,6 +13,20 @@ type TransactionModal = {
 
 export const TransactionModal = ({ isOpen, onRequestClose }: TransactionModal) => {
     const [typeTransaction, setTypeTransaction] = useState('deposit')
+    const [transactionData, setTransactionData] = useState({
+        title: '',
+        value: 0,
+        category: ''
+    })
+
+
+    const handleCreateNewTransaction = (event: FormEvent) => {
+        event.preventDefault()
+
+        const payload = {...transactionData, typeTransaction}
+
+        api.post('transactions', payload)
+    }
 
     return (
         <Modal
@@ -23,10 +38,22 @@ export const TransactionModal = ({ isOpen, onRequestClose }: TransactionModal) =
             <button type='button' onClick={onRequestClose} className='react-modal-close'>
                 <img src={closeImg} alt="Fechar" />
             </button>
-            <Container>
+            <Container onSubmit={handleCreateNewTransaction}>
                 <h2>Cadastrar Transação</h2>
-                <input placeholder='Título' />
-                <input type='number' placeholder='Valor' />
+                <input 
+                    placeholder='Título'
+                    name='title'
+                    value={transactionData.title}
+                    onChange={event => setTransactionData({...transactionData, [event.target.name]: event.target.value })}
+                />
+                <input 
+                    type='number' 
+                    name='value'
+                    value={transactionData.value}
+                    placeholder='Valor'
+                    onChange={event => setTransactionData({...transactionData, [event.target.name]: event.target.value })}
+                />
+
                 <TypeTransaction>
                     <CustomRadioBox 
                         type='button' 
@@ -47,8 +74,18 @@ export const TransactionModal = ({ isOpen, onRequestClose }: TransactionModal) =
                         <span>Saída</span>
                     </CustomRadioBox>
                 </TypeTransaction>
-                <input placeholder='Categoria' />
-                <button type='submit'>Cadastrar</button>
+
+                <input 
+                    placeholder='Categoria'
+                    name='category'
+                    value={transactionData.category}
+                    onChange={event => setTransactionData({...transactionData, [event.target.name]: event.target.value })}
+                />
+                <button 
+                    type='submit'
+                >
+                    Cadastrar
+                </button>
             </Container>
       </Modal>
     )

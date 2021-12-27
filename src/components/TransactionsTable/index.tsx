@@ -1,11 +1,22 @@
-import { useEffect } from "react"
+import { useEffect, useState } from "react"
 import { api } from "../../services/api"
 import { Container } from "./styles"
 
+type Transaction = {
+    id: number
+    title: string
+    value: number
+    category: string
+    typeTransaction: string
+    created_At: Date
+}
+
 export const TransactionTable = () => {
+    const [transactions, setTransactions] = useState<Transaction[]>([])
+
     useEffect(() => {
         api.get('transactions')
-            .then(response => console.log(response.data))
+            .then(response => setTransactions(response.data.transactions))
     }, [])
 
     return (
@@ -21,18 +32,21 @@ export const TransactionTable = () => {
                 </thead>
 
                 <tbody>
-                    <tr>
-                        <td>Dev web</td>
-                        <td className='deposit'>R$2000,00</td>
-                        <td>Work</td>
-                        <td>20/02/2021</td>
-                    </tr>
-                    <tr>
-                        <td>Aluguel</td>
-                        <td className='withdraw'>- R$1200,00</td>
-                        <td>Despesas</td>
-                        <td>20/02/2021</td>
-                    </tr>
+                    {transactions.map((transaction) => (
+                        <tr key={transaction.id}>
+                            <td>{transaction.title}</td>
+                            <td className={transaction.typeTransaction}>
+                                {new Intl.NumberFormat('pt-BR', {
+                                    style: 'currency',
+                                    currency: 'BRL'
+                                }).format(transaction.value)}
+                            </td>
+                            <td>{transaction.category}</td>
+                            <td>
+                                {new Intl.DateTimeFormat('pt-BR').format(new Date(transaction.created_At))}
+                            </td>
+                        </tr>
+                    ))}
                 </tbody>
             </table>
         </Container>
