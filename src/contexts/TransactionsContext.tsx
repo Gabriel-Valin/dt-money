@@ -10,11 +10,23 @@ type Transaction = {
     created_At: Date
 }
 
+type InputTransaction = Omit<Transaction, 'id' | 'created_At'>
+
 type ContextProps = {
     children: ReactNode
 }
 
-export const TransactionsContext = createContext<Transaction[]>([])
+type TransactionsContextValues = {
+    transactions: Transaction[]
+    createTransaction: (transaction: InputTransaction) => void
+}
+
+export const TransactionsContext = createContext<TransactionsContextValues>({} as TransactionsContextValues)
+
+const createTransaction = (transaction: InputTransaction) => {
+
+    api.post('transactions', transaction)
+}
 
 export const TransactionsProvider = ({ children }: ContextProps) => {
     const [transactions, setTransactions] = useState<Transaction[]>([])
@@ -25,7 +37,7 @@ export const TransactionsProvider = ({ children }: ContextProps) => {
     }, [])
 
     return (
-        <TransactionsContext.Provider value={transactions}>
+        <TransactionsContext.Provider value={{ transactions, createTransaction }}>
             {children}
         </TransactionsContext.Provider>
     )

@@ -3,8 +3,9 @@ import { Container, TypeTransaction, CustomRadioBox } from './styles'
 import closeImg from '../../assets/close.svg'
 import incomeImg from '../../assets/income.svg'
 import outcomeImg from '../../assets/outcome.svg'
-import { FormEvent, useState } from 'react'
+import { FormEvent, useState, useContext } from 'react'
 import { api } from '../../services/api'
+import { TransactionsContext } from '../../contexts/TransactionsContext'
 
 type TransactionModal = {
     isOpen: boolean
@@ -12,6 +13,8 @@ type TransactionModal = {
 }
 
 export const TransactionModal = ({ isOpen, onRequestClose }: TransactionModal) => {
+    const { createTransaction } = useContext(TransactionsContext)
+
     const [typeTransaction, setTypeTransaction] = useState('deposit')
     const [transactionData, setTransactionData] = useState({
         title: '',
@@ -25,7 +28,8 @@ export const TransactionModal = ({ isOpen, onRequestClose }: TransactionModal) =
 
         const payload = {...transactionData, typeTransaction}
 
-        api.post('transactions', payload)
+        createTransaction(payload)
+        
     }
 
     return (
