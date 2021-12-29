@@ -21,9 +21,9 @@ createServer({
         },
         {
           id: 2,
-          title: 'Mega Sena',
+          title: 'Ganhei na Mega Senha',
           typeTransaction: 'deposit',
-          value: 25000000,
+          value: 250000000,
           category: 'Sorte',
           created_At: new Date('2021-12-27 10:00:00')
         }

@@ -13,7 +13,7 @@ export const Summary = () => {
             acc.deposits += transaction.value
             acc.total += transaction.value
         } else {
-            acc.withdraws += transaction.value
+            acc.withdraws -= transaction.value
             acc.total -= transaction.value
         }
 
@@ -43,7 +43,7 @@ export const Summary = () => {
                     <p>Saídas</p>
                     <img src={outcomeImg} alt="Saídas" />
                 </header>
-                <strong>-
+                <strong>
                     {new Intl.NumberFormat('pt-BR', {
                         style: 'currency',
                         currency: 'BRL'

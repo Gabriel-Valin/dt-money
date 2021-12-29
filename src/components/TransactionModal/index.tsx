@@ -5,7 +5,7 @@ import incomeImg from '../../assets/income.svg'
 import outcomeImg from '../../assets/outcome.svg'
 import { FormEvent, useState, useContext } from 'react'
 import { api } from '../../services/api'
-import { TransactionsContext } from '../../hooks/useTransactions'
+import { useTransactions } from '../../hooks/useTransactions'
 
 type TransactionModal = {
     isOpen: boolean
@@ -19,7 +19,7 @@ const initalTransactionData = {
 }
 
 export const TransactionModal = ({ isOpen, onRequestClose }: TransactionModal) => {
-    const { createTransaction } = useContext(TransactionsContext)
+    const { createTransaction } = useTransactions()
 
     const [typeTransaction, setTypeTransaction] = useState('deposit')
     const [transactionData, setTransactionData] = useState(initalTransactionData)
