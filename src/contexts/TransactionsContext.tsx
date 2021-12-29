@@ -18,18 +18,19 @@ type ContextProps = {
 
 type TransactionsContextValues = {
     transactions: Transaction[]
-    createTransaction: (transaction: InputTransaction) => void
+    createTransaction: (transaction: InputTransaction) => Promise<void>
 }
 
 export const TransactionsContext = createContext<TransactionsContextValues>({} as TransactionsContextValues)
 
-const createTransaction = (transaction: InputTransaction) => {
-
-    api.post('transactions', transaction)
-}
-
 export const TransactionsProvider = ({ children }: ContextProps) => {
     const [transactions, setTransactions] = useState<Transaction[]>([])
+    const createTransaction = async (transactionInput: InputTransaction) => {
+        const response = await api.post('transactions', {...transactionInput, created_At: new Date() })
+        const { transaction } = response.data
+    
+        setTransactions([ ...transactions, transaction ])
+    }
 
     useEffect(() => {
         api.get('transactions')

@@ -12,24 +12,28 @@ type TransactionModal = {
     onRequestClose: () => void
 }
 
+const initalTransactionData = {
+    title: '',
+    value: 0,
+    category: ''
+}
+
 export const TransactionModal = ({ isOpen, onRequestClose }: TransactionModal) => {
     const { createTransaction } = useContext(TransactionsContext)
 
     const [typeTransaction, setTypeTransaction] = useState('deposit')
-    const [transactionData, setTransactionData] = useState({
-        title: '',
-        value: 0,
-        category: ''
-    })
+    const [transactionData, setTransactionData] = useState(initalTransactionData)
 
 
-    const handleCreateNewTransaction = (event: FormEvent) => {
+    const handleCreateNewTransaction = async (event: FormEvent) => {
         event.preventDefault()
 
         const payload = {...transactionData, typeTransaction}
 
-        createTransaction(payload)
+        await createTransaction(payload)
         
+        setTransactionData(initalTransactionData)
+        onRequestClose()
     }
 
     return (
